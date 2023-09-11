@@ -1,0 +1,36 @@
+---
+- hosts: all
+  become: true
+  pre_tasks: 
+  
+  - name: install updates (Ubuntu)
+    tags: always  
+    apt:
+      update_only: yes
+      update_cache:  yes
+    when: ansible_distribution == "ubuntu"
+
+- hosts: all
+  become: true
+  tasks: 
+    - name: create user named bob
+      tags: always
+      user:
+        name: bob
+        groups: root
+
+    - name: add ssh key for bob
+      tags: always
+      authorized_key:
+        user: bob
+        key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOE4ZMzqT3gJoxrxtOpCTXV0sfVZzORspLLb14OUViDi Ansible"
+ 
+    - name: add sudoers file for bob
+      tags: always
+      copy:
+        src: sudoer_bob
+        dest: /etc/sudoers.d/bob
+        owner: root
+        group: root
+        mode: 0440
+
