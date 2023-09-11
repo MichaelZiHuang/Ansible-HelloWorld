@@ -1,35 +1,27 @@
 - name: install apache2 and mod-php package, update cache
   tags: apache2, libapach2, ubuntu
-  apt:
+  package:
     name:
-      - apache2
-      - libapache2-mod-php
+      - "{{ apache_package_name }}"
+      - "{{ php_package_name }}"
     state: latest
-
-    when: ansible_distribution == 'ubuntu'
 
 - name: start httpd (ubuntu)
   tags: apache, libapache2, ubuntu
   service:
-    name: apache2
+    name: "{{ apache_service }}"
     state: started
     enabled: yes
-    when: ansible_distribution == 'ubuntu'
+    
 
 - name: change email for admin
   tags: apache2, libapache2, ubuntu
   lineinfile:
     path: /etc/apache2/apache2.conf
     regexp: '^ServerAdmin'
-    line: serverAdmin somebody@somewhere.net
-    register: apache2
+    line: serverAdmin somebody@somewhere.com
+  notify: restart_apache
 
-- name: restart apache2
-  tags: apache2, libapache2, ubuntu
-  service:
-    name: apache2
-    state: restarted
-    when: apache2.changed
 
 - name: copy default html to server
   tags: apache2, libapache2, ubuntu
@@ -38,4 +30,5 @@
     dest: /var/www/html/index.html
     owner: root
     group: root
+
 
