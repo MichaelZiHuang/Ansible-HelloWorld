@@ -1,0 +1,6 @@
+- name: add ssh key for bob
+  tags: always
+  authorized_key:
+    user: bob
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOE4ZMzqT3gJoxrxtOpCTXV0sfVZzORspLLb14OUViDi Ansible"
+
